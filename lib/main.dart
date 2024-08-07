@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list_app/config/theme/color_theme.dart';
+import 'package:to_do_list_app/features/task_management/presentation/page/task_management_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +11,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme,
+      home: const TaskManagementPage(),
     );
   }
 }
