@@ -7,9 +7,11 @@ abstract class AddTaskEvent {
 class PostTaskEvent extends AddTaskEvent {
   final String taskName;
   final String taskDescription;
+  final int taskId;
 
   PostTaskEvent({
     required this.taskName,
     required this.taskDescription,
+    required this.taskId,
   });
 }

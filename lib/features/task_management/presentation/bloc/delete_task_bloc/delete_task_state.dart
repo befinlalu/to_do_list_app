@@ -1,7 +1,9 @@
 part of 'delete_task_bloc.dart';
 
-abstract class DeleteTaskState {
+abstract class DeleteTaskState extends Equatable {
   const DeleteTaskState();
+  @override
+  List<Object?> get props => [];
 }
 
 final class DeleteTaskInitial extends DeleteTaskState {}

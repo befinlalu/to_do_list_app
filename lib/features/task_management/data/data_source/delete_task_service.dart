@@ -5,7 +5,12 @@ class DeleteTaskService {
   final Box<TaskModel> tasksBox;
 
   DeleteTaskService(this.tasksBox);
-  Future<void> deleteTask(int taskId) async {
-    await tasksBox.delete(taskId);
+  Future<bool> deleteTask(int taskId) async {
+    try {
+      await tasksBox.delete(taskId);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -40,29 +40,26 @@ class _TaskManagementPageState extends State<TaskManagementPage> {
           DefaultTabController(
             animationDuration: const Duration(milliseconds: 500),
             length: pages().length,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Divider(
-                    height: 35,
-                    color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Divider(
+                  height: 35,
+                  color: Colors.transparent,
+                ),
+                const SelectionBarWidget(),
+                const Divider(
+                  height: 20,
+                  color: Colors.transparent,
+                ),
+                SizedBox(
+                  height: 600,
+                  child: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: pages(),
                   ),
-                  const SelectionBarWidget(),
-                  const Divider(
-                    height: 20,
-                    color: Colors.transparent,
-                  ),
-                  SizedBox(
-                    height: 600,
-                    child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: pages(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

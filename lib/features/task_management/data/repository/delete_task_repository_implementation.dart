@@ -3,17 +3,14 @@ import 'package:to_do_list_app/features/task_management/domain/repository/delete
 
 class DeleteTaskRepositoryImplementation implements DeleteTaskRepository {
   final DeleteTaskService deleteTaskService;
-  final int taskId;
 
-  DeleteTaskRepositoryImplementation(this.deleteTaskService, this.taskId);
+  DeleteTaskRepositoryImplementation(this.deleteTaskService);
   @override
-  Future<bool> deleteTask() async {
+  Future<bool> deleteTask(int taskId) async {
     try {
       await deleteTaskService.deleteTask(taskId);
       return true;
     } catch (e) {
-      // Log the error or handle it accordingly
-      print('Error posting task: $e');
       return false;
     }
   }

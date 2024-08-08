@@ -3,17 +3,17 @@ import 'package:to_do_list_app/features/task_management/domain/repository/comple
 
 class CompleteTaskRepositoryImplementation implements CompleteTaskRepository {
   final CompleteTaskService completeTaskService;
-  final int taskId;
 
-  CompleteTaskRepositoryImplementation(this.completeTaskService, this.taskId);
+  CompleteTaskRepositoryImplementation(
+    this.completeTaskService,
+  );
   @override
-  Future<bool> completeTask() async {
+  Future<bool> completeTask(int taskId) async {
     try {
       await completeTaskService.completeTask(taskId);
       return true;
     } catch (e) {
       // Log the error or handle it accordingly
-      print('Error posting task: $e');
       return false;
     }
   }

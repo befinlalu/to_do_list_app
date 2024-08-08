@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list_app/config/theme/color_theme.dart';
 import 'package:to_do_list_app/features/task_management/domain/entity/task_entity.dart';
+
 import 'package:to_do_list_app/features/task_management/presentation/bloc/complete_task_bloc/complete_task_bloc.dart';
 import 'package:to_do_list_app/features/task_management/presentation/bloc/delete_task_bloc/delete_task_bloc.dart';
+import 'package:to_do_list_app/injection_container.dart';
 
 class TaskTileWidget extends StatefulWidget {
   final TaskEntity task;
@@ -21,56 +22,59 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
     with TickerProviderStateMixin {
   late SlidableController slidableController;
 
-  final deleteBloc = DeleteTaskBloc();
-  final completeBloc = CompleteTaskBloc();
+  late DeleteTaskBloc deleteBloc;
+  late CompleteTaskBloc completeBloc;
 
   @override
   void initState() {
     super.initState();
     slidableController = SlidableController(this);
+    deleteBloc = sl();
+    completeBloc = sl();
   }
 
   @override
   void dispose() {
-    super.dispose();
     slidableController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14.0),
+      padding: const EdgeInsets.only(
+        bottom: 14.0,
+        left: 14,
+        right: 14,
+      ),
       child: Slidable(
         controller: slidableController,
         startActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
-            BlocProvider(
-              create: (context) => deleteBloc,
-              child: SlidableAction(
-                flex: 1,
-                padding: EdgeInsets.zero,
-                onPressed: (context) {
-                  deleteBloc.add(DeleteTask(taskId: widget.task.taskId));
-                },
-                backgroundColor: redColor,
-                foregroundColor: const Color(0xFFA2A2B5),
-                icon: Icons.delete,
-              ),
+            SlidableAction(
+              flex: 1,
+              padding: EdgeInsets.zero,
+              onPressed: (context) {
+                deleteBloc.add(DeleteTask(taskId: widget.task.taskId));
+              },
+              backgroundColor: redColor,
+              foregroundColor: const Color(0xFFA2A2B5),
+              icon: Icons.delete,
             ),
-            BlocProvider(
-              create: (context) => completeBloc,
-              child: SlidableAction(
-                flex: 1,
-                padding: EdgeInsets.zero,
-                onPressed: (context) {
-                  completeBloc.add(CompleteTask(taskId: widget.task.taskId));
-                },
-                backgroundColor: greenColor,
-                foregroundColor: const Color(0xFFA2A2B5),
-                icon: Icons.done_outline,
-              ),
-            ),
+            (!widget.task.isCompleted)
+                ? SlidableAction(
+                    flex: 1,
+                    padding: EdgeInsets.zero,
+                    onPressed: (context) {
+                      completeBloc
+                          .add(CompleteTask(taskId: widget.task.taskId));
+                    },
+                    backgroundColor: greenColor,
+                    foregroundColor: const Color(0xFFA2A2B5),
+                    icon: Icons.done_outline,
+                  )
+                : const SizedBox(),
           ],
         ),
         child: GestureDetector(

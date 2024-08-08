@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_list_app/config/theme/color_theme.dart';
+import 'package:to_do_list_app/core/utils/task_id_service.dart';
 import 'package:to_do_list_app/core/widgets/custom_long_button.dart';
 import 'package:to_do_list_app/core/widgets/task_description_textfield_widget.dart';
 import 'package:to_do_list_app/core/widgets/task_textfield_widget.dart';
+
 import 'package:to_do_list_app/features/task_management/presentation/bloc/add_task_bloc/add_task_bloc.dart';
+import 'package:to_do_list_app/injection_container.dart';
 
 enum ValidationField {
   name,
@@ -27,13 +30,14 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
 
-  final bloc = AddTaskBloc();
+  late AddTaskBloc bloc;
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController();
     descriptionController = TextEditingController();
+    bloc = sl();
   }
 
   @override
@@ -152,15 +156,17 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                         buttonTitle: "create",
                         isLoading: false,
                         textColor: textColor1,
-                        onPressed: () {
+                        onPressed: () async {
                           validateField(context, ValidationField.name);
                           validateField(context, ValidationField.description);
                           if (nameController.text != "" &&
                               descriptionController.text != "") {
+                            int taskId = await TaskIdService.getNextTaskId();
                             bloc.add(
                               PostTaskEvent(
                                 taskName: nameController.text,
                                 taskDescription: descriptionController.text,
+                                taskId: taskId,
                               ),
                             );
                           }

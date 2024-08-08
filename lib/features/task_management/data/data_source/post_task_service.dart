@@ -5,7 +5,12 @@ class PostTaskService {
   final Box<TaskModel> tasksBox;
 
   PostTaskService(this.tasksBox);
-  Future<void> postTask(TaskModel task) async {
-    await tasksBox.put(task.taskId, task);
+  Future<bool> postTask(TaskModel task) async {
+    try {
+      await tasksBox.put(task.taskId, task);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -1,3 +1,3 @@
 abstract class CompleteTaskRepository {
-  Future<bool> completeTask();
+  Future<bool> completeTask(int taskId);
 }

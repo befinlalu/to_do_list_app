@@ -4,21 +4,17 @@ import 'package:to_do_list_app/features/task_management/domain/repository/post_t
 
 class PostTaskRepositoryImplementation implements PostTaskRepository {
   final PostTaskService postTaskService;
-  final TaskModel taskModel;
 
   PostTaskRepositoryImplementation(
     this.postTaskService,
-    this.taskModel,
   );
 
   @override
-  Future<bool> postTask() async {
+  Future<bool> postTask(TaskModel task) async {
     try {
-      await postTaskService.postTask(taskModel);
+      await postTaskService.postTask(task);
       return true;
     } catch (e) {
-      // Log the error or handle it accordingly
-      print('Error posting task: $e');
       return false;
     }
   }

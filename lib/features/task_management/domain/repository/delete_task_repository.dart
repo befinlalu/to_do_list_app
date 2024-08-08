@@ -1,3 +1,3 @@
 abstract class DeleteTaskRepository {
-  Future<bool> deleteTask();
+  Future<bool> deleteTask(int taskId);
 }
