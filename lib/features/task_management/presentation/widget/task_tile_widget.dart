@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list_app/config/theme/color_theme.dart';
+import 'package:to_do_list_app/features/task_management/domain/entity/task_entity.dart';
+import 'package:to_do_list_app/features/task_management/presentation/bloc/complete_task_bloc/complete_task_bloc.dart';
+import 'package:to_do_list_app/features/task_management/presentation/bloc/delete_task_bloc/delete_task_bloc.dart';
 
 class TaskTileWidget extends StatefulWidget {
-  const TaskTileWidget({super.key});
+  final TaskEntity task;
+  const TaskTileWidget({
+    super.key,
+    required this.task,
+  });
 
   @override
   State<TaskTileWidget> createState() => _TaskTileWidgetState();
@@ -12,6 +20,10 @@ class TaskTileWidget extends StatefulWidget {
 class _TaskTileWidgetState extends State<TaskTileWidget>
     with TickerProviderStateMixin {
   late SlidableController slidableController;
+
+  final deleteBloc = DeleteTaskBloc();
+  final completeBloc = CompleteTaskBloc();
+
   @override
   void initState() {
     super.initState();
@@ -33,21 +45,31 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
         startActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
-            SlidableAction(
-              flex: 1,
-              padding: EdgeInsets.zero,
-              onPressed: (context) {},
-              backgroundColor: redColor,
-              foregroundColor: const Color(0xFFA2A2B5),
-              icon: Icons.delete,
+            BlocProvider(
+              create: (context) => deleteBloc,
+              child: SlidableAction(
+                flex: 1,
+                padding: EdgeInsets.zero,
+                onPressed: (context) {
+                  deleteBloc.add(DeleteTask(taskId: widget.task.taskId));
+                },
+                backgroundColor: redColor,
+                foregroundColor: const Color(0xFFA2A2B5),
+                icon: Icons.delete,
+              ),
             ),
-            SlidableAction(
-              flex: 1,
-              padding: EdgeInsets.zero,
-              onPressed: (context) {},
-              backgroundColor: greenColor,
-              foregroundColor: const Color(0xFFA2A2B5),
-              icon: Icons.done_outline,
+            BlocProvider(
+              create: (context) => completeBloc,
+              child: SlidableAction(
+                flex: 1,
+                padding: EdgeInsets.zero,
+                onPressed: (context) {
+                  completeBloc.add(CompleteTask(taskId: widget.task.taskId));
+                },
+                backgroundColor: greenColor,
+                foregroundColor: const Color(0xFFA2A2B5),
+                icon: Icons.done_outline,
+              ),
             ),
           ],
         ),
@@ -61,7 +83,9 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 width: 1,
-                color: Theme.of(context).colorScheme.secondary,
+                color: widget.task.isCompleted
+                    ? greenColor
+                    : Theme.of(context).colorScheme.secondary,
               ),
             ),
             child: Column(
@@ -70,14 +94,14 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
               children: [
                 Container(
                   width: 200,
-                  height: 25,
+                  height: 23,
                   color: Colors.transparent,
                   child: FittedBox(
                     fit: BoxFit.fitHeight,
                     alignment: Alignment.centerLeft,
                     child: Text(
                       maxLines: 1,
-                      "Task Name",
+                      widget.task.taskName,
                       style: TextStyle(
                         color: textColor1,
                         fontWeight: FontWeight.bold,
@@ -95,7 +119,7 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
                   child: Text(
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    "Description is something",
+                    widget.task.taskDescription,
                     style: TextStyle(
                       color: textColor1,
                       fontWeight: FontWeight.normal,

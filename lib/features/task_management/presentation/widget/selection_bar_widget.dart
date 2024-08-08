@@ -53,7 +53,7 @@ class SelectionBarWidget extends StatelessWidget {
               height: (30),
               child: Center(
                 child: Text(
-                  "Todo",
+                  "Pending",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: textColor1,

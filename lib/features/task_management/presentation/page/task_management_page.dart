@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:to_do_list_app/config/theme/color_theme.dart';
+import 'package:to_do_list_app/features/task_management/data/model/task_model.dart';
 import 'package:to_do_list_app/features/task_management/presentation/widget/add_task_widget.dart';
 import 'package:to_do_list_app/features/task_management/presentation/widget/all_task_widget.dart';
 import 'package:to_do_list_app/features/task_management/presentation/widget/completed_task_widget.dart';
@@ -14,6 +16,7 @@ class TaskManagementPage extends StatefulWidget {
 }
 
 class _TaskManagementPageState extends State<TaskManagementPage> {
+  final taskBox = Hive.box<TaskModel>('tasksBox');
   @override
   Widget build(BuildContext context) {
     List<Widget> pages() {
@@ -69,7 +72,7 @@ class _TaskManagementPageState extends State<TaskManagementPage> {
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           context: context,
-          builder: (context) => AddTaskWidget(),
+          builder: (context) => const AddTaskWidget(),
         ),
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         child: Icon(
