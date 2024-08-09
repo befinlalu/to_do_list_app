@@ -8,7 +8,7 @@ import 'package:to_do_list_app/features/task_management/presentation/bloc/delete
 import 'package:to_do_list_app/injection_container.dart';
 
 class TaskTileWidget extends StatefulWidget {
-  final TaskEntity task;
+  final TaskEntity task; // TaskEntity object passed to the widget
   const TaskTileWidget({
     super.key,
     required this.task,
@@ -21,20 +21,21 @@ class TaskTileWidget extends StatefulWidget {
 class _TaskTileWidgetState extends State<TaskTileWidget>
     with TickerProviderStateMixin {
   late SlidableController slidableController;
-
   late DeleteTaskBloc deleteBloc;
   late CompleteTaskBloc completeBloc;
 
   @override
   void initState() {
     super.initState();
+    // Initialize SlidableController and BLoCs
     slidableController = SlidableController(this);
-    deleteBloc = sl();
-    completeBloc = sl();
+    deleteBloc = sl<DeleteTaskBloc>();
+    completeBloc = sl<CompleteTaskBloc>();
   }
 
   @override
   void dispose() {
+    // Dispose of SlidableController
     slidableController.dispose();
     super.dispose();
   }
@@ -52,6 +53,7 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
         startActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
+            // Delete action for the task
             SlidableAction(
               flex: 1,
               padding: EdgeInsets.zero,
@@ -62,6 +64,7 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
               foregroundColor: const Color(0xFFA2A2B5),
               icon: Icons.delete,
             ),
+            // Complete action for incomplete tasks
             (!widget.task.isCompleted)
                 ? SlidableAction(
                     flex: 1,
@@ -78,6 +81,7 @@ class _TaskTileWidgetState extends State<TaskTileWidget>
           ],
         ),
         child: GestureDetector(
+          // Open the Slidable action pane when tapped
           onTap: () => slidableController.openStartActionPane(),
           child: Container(
             padding: const EdgeInsets.all(14),

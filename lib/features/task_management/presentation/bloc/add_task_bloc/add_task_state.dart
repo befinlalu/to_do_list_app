@@ -6,7 +6,7 @@ abstract class AddTaskState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class AddTaskInitial extends AddTaskState {}
+class AddTaskInitial extends AddTaskState {}
 
 class PostTaskLoadingState extends AddTaskState {}
 

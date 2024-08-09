@@ -19,14 +19,13 @@ import 'package:to_do_list_app/features/task_management/presentation/bloc/delete
 
 final sl = GetIt.instance;
 
-Future<void> initializeDependencies() async {
+void initializeDependencies() {
   sl.registerSingleton<Box<TaskModel>>(Hive.box<TaskModel>('tasksBox'));
-
+  sl.registerFactory(() => AddTaskBloc(sl()));
   sl.registerSingleton<PostTaskService>(PostTaskService(sl()));
-  sl.registerSingleton<PostTaskRepository>(
-      PostTaskRepositoryImplementation(sl()));
-  sl.registerSingleton<PostTaskUsecase>(PostTaskUsecase(sl()));
-  sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl()));
+  sl.registerLazySingleton<PostTaskRepository>(
+      () => PostTaskRepositoryImplementation(sl()));
+  sl.registerLazySingleton(() => PostTaskUsecase(sl()));
 
   sl.registerSingleton<DeleteTaskService>(DeleteTaskService(sl()));
   sl.registerSingleton<DeleteTaskRepository>(

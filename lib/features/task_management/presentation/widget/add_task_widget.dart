@@ -9,6 +9,7 @@ import 'package:to_do_list_app/core/widgets/task_textfield_widget.dart';
 import 'package:to_do_list_app/features/task_management/presentation/bloc/add_task_bloc/add_task_bloc.dart';
 import 'package:to_do_list_app/injection_container.dart';
 
+// Used for validation for textfields
 enum ValidationField {
   name,
   description,
@@ -37,16 +38,17 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
     super.initState();
     nameController = TextEditingController();
     descriptionController = TextEditingController();
-    bloc = sl();
+    bloc = sl<AddTaskBloc>(); // Injecting the AddTaskBloc using GetIt
   }
 
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
+    nameController.dispose(); // Disposing the controllers to free resources
     descriptionController.dispose();
   }
 
+  // Callback functions for validating name and description fields
   void nameCallBack() {
     validateField(context, ValidationField.name);
   }
@@ -55,27 +57,29 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
     validateField(context, ValidationField.description);
   }
 
+  // Validation function for name and description fields
   void validateField(BuildContext context, ValidationField field) {
     switch (field) {
       case ValidationField.name:
         if (nameController.text == "") {
           setState(() {
-            nameError = true;
+            nameError = true; // Set error if the name field is empty
           });
         } else {
           setState(() {
-            nameError = false;
+            nameError = false; // Clear error if the name field is not empty
           });
         }
         break;
       case ValidationField.description:
         if (descriptionController.text == "") {
           setState(() {
-            descError = true;
+            descError = true; // Set error if the description field is empty
           });
         } else {
           setState(() {
-            descError = false;
+            descError =
+                false; // Clear error if the description field is not empty
           });
         }
         break;
@@ -87,6 +91,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
     return BlocConsumer<AddTaskBloc, AddTaskState>(
       bloc: bloc,
       listener: (context, state) {
+        // Close the bottom sheet if the task is successfully created
         if (state is PostTaskSuccessState) {
           Navigator.pop(context);
         }
@@ -94,7 +99,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
       builder: (context, state) {
         return (state is! PostTaskLoadingState)
             ? Padding(
-                padding: MediaQuery.of(context).viewInsets,
+                padding:
+                    MediaQuery.of(context).viewInsets, // Adjust for keyboard
                 child: Container(
                   padding: const EdgeInsets.all(14),
                   height: 400,
@@ -130,7 +136,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                         title: "Task Name",
                         controller: nameController,
                         isError: nameError,
-                        callBack: nameCallBack,
+                        callBack:
+                            nameCallBack, // Trigger validation when the name field changes
                       ),
                       const Divider(
                         height: 15,
@@ -140,7 +147,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                         title: "Task Description",
                         controller: descriptionController,
                         isError: descError,
-                        callBack: descCallBack,
+                        callBack:
+                            descCallBack, // Trigger validation when the description field changes
                       ),
                       const Divider(
                         height: 30,
@@ -157,16 +165,18 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                         isLoading: false,
                         textColor: textColor1,
                         onPressed: () async {
+                          // Validate fields before creating the task
                           validateField(context, ValidationField.name);
                           validateField(context, ValidationField.description);
                           if (nameController.text != "" &&
                               descriptionController.text != "") {
-                            int taskId = await TaskIdService.getNextTaskId();
+                            int taskId = await TaskIdService
+                                .getNextTaskId(); // Generate a unique task ID
                             bloc.add(
                               PostTaskEvent(
                                 taskName: nameController.text,
                                 taskDescription: descriptionController.text,
-                                taskId: taskId,
+                                taskId: taskId, // Pass the generated task ID
                               ),
                             );
                           }
@@ -177,7 +187,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                 ),
               )
             : const Center(
-                child: CircularProgressIndicator(),
+                child:
+                    CircularProgressIndicator(), // Show a loading indicator while the task is being created
               );
       },
     );
